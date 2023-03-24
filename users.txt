@@ -1,0 +1,3 @@
+ko,la,jo@uabcs.mx,12
+jose,lopez,jgomez_21@uabcs.mx,123cuadradoxd
+Rata,Uno,rata@gmail.com,123

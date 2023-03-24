@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -36,8 +37,13 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class Ventana extends JFrame {
+	private int duracion;
+	private String anterior = "login";
+	private String actual = "login";
+	public JPanel panel = null;
 	
 	public Ventana() {
+		
 		this.setVisible(true);
 		this.setSize(600, 700);
 		this.setLocationRelativeTo(null);
@@ -45,17 +51,7 @@ public class Ventana extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setBackground(Color.white);
 		this.setLayout(null);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+	
 		
 		
 		
@@ -66,4 +62,37 @@ public class Ventana extends JFrame {
 		
 		
 		}
+	
+	public void Splash(int duracion) {
+		duracion = 4000;
+		this.duracion = duracion;
+		JPanel panel = (JPanel) getContentPane();
+		ImageIcon img = new ImageIcon("img/sol.png");
+		
+		panel.add(new JLabel(img),BorderLayout.CENTER);
+		setSize(img.getIconWidth(), img.getIconHeight());
+		setLocationRelativeTo(null);
+		setVisible(true);
+		setTitle("Pantalla de carga");
+		
+		try {
+			Thread.sleep(duracion);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		setVisible(false);
+		
+	}
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

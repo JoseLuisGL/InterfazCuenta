@@ -65,7 +65,7 @@ public class Ventana extends JFrame {
 		
 		
 		
-		
+	
 		
 		
 		
@@ -219,8 +219,8 @@ public class Ventana extends JFrame {
 				
 		}
 			
-		public JPanel cuenta() {
-			JLabel bienvenida = new JLabel("<html>Bienvenido has hecho sesion como:<p><html>" ,JLabel.CENTER);
+	public JPanel cuenta() {
+			JLabel bienvenida = new JLabel("<html>Bienvenido has iniciado sesion correctamente<p><html>" ,JLabel.CENTER);
 			bienvenida.setFont(new Font("Comic Sans", Font.BOLD,18));
 			bienvenida.setSize(350, 160);
 			bienvenida.setLocation(80, 20);
@@ -258,7 +258,10 @@ public class Ventana extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-					
+					anterior = actual;
+					actual = "micuenta";
+					remove(jp3);
+					limpiarVentana();
 				}
 				
 			});
@@ -324,7 +327,7 @@ public class Ventana extends JFrame {
 			return jp3;
 		}
 		
-		public JPanel registro() {
+	public JPanel registro() {
 
 		
 			anterior = actual;
@@ -495,7 +498,7 @@ public class Ventana extends JFrame {
 		
 			}
 		
-		public void limpiarVentana() {
+	public void limpiarVentana() {
 		
 			if(panel!= null) {
 				this.remove(panel);
@@ -534,10 +537,18 @@ public class Ventana extends JFrame {
 				this.repaint();
 				this.revalidate();
 			}
+			if(actual.equals("micuenta")){
+				panel = Micuenta();
+				
+				this.add(panel);
+				
+				this.repaint();
+				this.revalidate();
+			}
 	
 		}
 	
-		public JPanel ayuda() {
+	public JPanel ayuda() {
 			anterior = actual;
 			actual = "ayuda";
 			JPanel jp4 = new JPanel();
@@ -667,7 +678,101 @@ public class Ventana extends JFrame {
 			return jp4;
 		}
 	
-	
+	public JPanel Micuenta() {
+		anterior = actual;
+		actual = "micuenta";
+		JLabel bienvenida = new JLabel("<html>Mi cuenta personal<html>" ,JLabel.CENTER);
+		bienvenida.setFont(new Font("Comic Sans", Font.BOLD,20));
+		bienvenida.setSize(350, 130);
+		bienvenida.setLocation(70, 0);
+		bienvenida.setOpaque(true);
+		bienvenida.setBackground(Color.decode("#FFB4B5"));
+		
+		JPanel jp5 = new JPanel();
+		jp5.setSize(500, 600);
+		jp5.setLocation(0, 0);
+		jp5.setLayout(null);
+		jp5.setBackground(Color.decode("#FFB4B5"));
+		
+		JLabel image1 = new JLabel();
+		image1.setSize(100, 100);
+		image1.setLocation(200, 80);
+		ImageIcon imagen = new ImageIcon("img/inicio.png");
+		Icon icono = new ImageIcon(imagen.getImage().getScaledInstance(image1.getWidth(), image1.getHeight(), Image.SCALE_DEFAULT));
+		image1.setIcon(icono);
+		jp5.add(image1);
+		
+		JLabel tag1R = new JLabel("Nombre: ",JLabel.CENTER);
+		tag1R.setSize(250, 20);
+		tag1R.setLocation(120, 180);
+		tag1R.setOpaque(true);
+		tag1R.setBackground(Color.decode("#FFB4B5"));
+		tag1R.setForeground(Color.white);
+		jp5.add(tag1R);
+		
+		JTextField nombres = new JTextField("");
+		nombres.setSize(250, 40);
+		nombres.setLocation(120, 200);
+		jp5.add(nombres);
+		
+		JLabel tag2R = new JLabel("Apellidos: ",JLabel.CENTER);
+		tag2R.setSize(250, 20);
+		tag2R.setLocation(120, 240);
+		tag2R.setOpaque(true);
+		tag2R.setBackground(Color.decode("#FFB4B5"));
+		tag2R.setForeground(Color.white);
+		jp5.add(tag2R);
+		
+		JTextField usuarios = new JTextField();
+		usuarios.setSize(250, 40);
+		usuarios.setLocation(120, 260);
+		jp5.add(usuarios);
+		
+		JLabel tag3 = new JLabel("Email: ",JLabel.CENTER);
+		tag3.setSize(250, 20);
+		tag3.setLocation(120, 300);
+		tag3.setOpaque(true);
+		tag3.setBackground(Color.decode("#FFB4B5"));
+		tag3.setForeground(Color.white);
+		jp5.add(tag3);
+		
+		JTextField correo = new JTextField();
+		correo.setSize(250, 40);
+		correo.setLocation(120, 320);
+		jp5.add(correo);
+		
+		JLabel tag4 = new JLabel("Contraseña: ",JLabel.CENTER);
+		tag4.setSize(250, 20);
+		tag4.setLocation(120, 360);
+		tag4.setOpaque(true);
+		tag4.setBackground(Color.decode("#FFB4B5"));
+		tag4.setForeground(Color.white);
+		jp5.add(tag4);
+		
+		JPasswordField contraseña = new JPasswordField();
+		contraseña.setSize(250, 40);
+		contraseña.setLocation(120, 380);
+		jp5.add(contraseña);
+		
+		
+		JButton btnVolver = new JButton("Cancelar");
+		btnVolver.setSize(100, 30);
+		btnVolver.setLocation(120, 450);
+		btnVolver.setBackground(Color.red);
+		btnVolver.setForeground(Color.white);
+		
+		JButton btnActualizar = new JButton("Actulizar datos");
+		btnActualizar.setSize(140, 30);
+		btnActualizar.setLocation(230, 450);
+		btnActualizar.setBackground(Color.blue);
+		btnActualizar.setForeground(Color.white);
+
+
+		jp5.add(btnActualizar);
+		jp5.add(btnVolver);
+		jp5.add(bienvenida);
+		return jp5;
+	}
 	
 	
 }

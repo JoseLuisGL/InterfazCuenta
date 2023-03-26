@@ -43,7 +43,6 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class Ventana extends JFrame {
-	private static final ActionListener ActionListener = null;
 	private int duracion;
 	private String anterior = "login";
 	private String actual = "login";
@@ -51,6 +50,7 @@ public class Ventana extends JFrame {
 	private String ayuda = "login";
 	private String tabla = "login";
 	private String usuarioSeleccionado;
+	 private DefaultTableModel dtm;
 	public JPanel panel = null;
 	
 	public Ventana() {
@@ -937,7 +937,25 @@ public class Ventana extends JFrame {
 	        }
 	    });
 	    
-	    
+	    Object[] cabeceras = {"Nombre", "Apellidos", "Email", "Contraseña"};
+		dtm = new DefaultTableModel(cabeceras, 0);
+
+        try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                dtm.addRow(datos);
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        JTable tabla = new JTable(dtm);
+        JScrollPane es = new JScrollPane(tabla);
+        es.setSize(350, 130);
+        es.setLocation(50, 230);
+        jp6.add(es);
+
+        setVisible(true);
 	    
 	    
 	    jp6.add(lista);
@@ -945,4 +963,6 @@ public class Ventana extends JFrame {
 	    jp6.add(edit);
 	    return jp6;
 	}
+	
+	
 }

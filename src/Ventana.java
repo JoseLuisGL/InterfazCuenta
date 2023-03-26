@@ -49,6 +49,7 @@ public class Ventana extends JFrame {
 	private String actual = "login";
 	private String cuenta = "login";
 	private String ayuda = "login";
+	private String tabla = "login";
 	public JPanel panel = null;
 	
 	public Ventana() {
@@ -287,7 +288,10 @@ public class Ventana extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-					
+					anterior = actual;
+					actual = "tabla";
+					remove(jp3);
+					limpiarVentana();
 				}
 				
 			});
@@ -540,6 +544,14 @@ public class Ventana extends JFrame {
 			}
 			if(actual.equals("micuenta")){
 				panel = Micuenta();
+				
+				this.add(panel);
+				
+				this.repaint();
+				this.revalidate();
+			}
+			if(actual.equals("tabla")){
+				panel = tabla();
 				
 				this.add(panel);
 				
@@ -849,5 +861,39 @@ public class Ventana extends JFrame {
 		return jp5;
 	}
 	
-	
+	public JPanel tabla() {
+		anterior = actual;
+		actual = "tabla";
+		JLabel bienvenida = new JLabel("<html>Lista de usuarios<html>" ,JLabel.CENTER);
+		bienvenida.setFont(new Font("Comic Sans", Font.BOLD,20));
+		bienvenida.setSize(350, 100);
+		bienvenida.setLocation(70, 0);
+		bienvenida.setOpaque(true);
+		bienvenida.setBackground(Color.decode("#FFB4B5"));
+		
+		JPanel jp6 = new JPanel();
+		jp6.setSize(500, 600);
+		jp6.setLocation(0, 0);
+		jp6.setLayout(null);
+		jp6.setBackground(Color.decode("#FFB4B5"));
+		
+		JLabel edit = new JLabel("<html>Editar<html>",JLabel.LEFT);
+		edit.setFont(new Font("Comic Sans", Font.BOLD,16));
+		edit.setSize(350, 130);
+		edit.setLocation(50, 60);
+		edit.setOpaque(true);
+		edit.setBackground(Color.decode("#FFB4B5"));
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		jp6.add(bienvenida);
+		jp6.add(edit);
+		return jp6;
+	}
 }

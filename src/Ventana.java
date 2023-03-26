@@ -50,6 +50,7 @@ public class Ventana extends JFrame {
 	private String cuenta = "login";
 	private String ayuda = "login";
 	private String tabla = "login";
+	private String usuarioSeleccionado;
 	public JPanel panel = null;
 	
 	public Ventana() {
@@ -863,37 +864,85 @@ public class Ventana extends JFrame {
 	
 	public JPanel tabla() {
 		anterior = actual;
-		actual = "tabla";
-		JLabel bienvenida = new JLabel("<html>Lista de usuarios<html>" ,JLabel.CENTER);
-		bienvenida.setFont(new Font("Comic Sans", Font.BOLD,20));
-		bienvenida.setSize(350, 100);
-		bienvenida.setLocation(70, 0);
-		bienvenida.setOpaque(true);
-		bienvenida.setBackground(Color.decode("#FFB4B5"));
-		
-		JPanel jp6 = new JPanel();
-		jp6.setSize(500, 600);
-		jp6.setLocation(0, 0);
-		jp6.setLayout(null);
-		jp6.setBackground(Color.decode("#FFB4B5"));
-		
-		JLabel edit = new JLabel("<html>Editar<html>",JLabel.LEFT);
-		edit.setFont(new Font("Comic Sans", Font.BOLD,16));
-		edit.setSize(350, 130);
-		edit.setLocation(50, 60);
-		edit.setOpaque(true);
-		edit.setBackground(Color.decode("#FFB4B5"));
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		jp6.add(bienvenida);
-		jp6.add(edit);
-		return jp6;
+	    actual = "tabla";
+	    JLabel bienvenida = new JLabel("<html>Lista de usuarios<html>", JLabel.CENTER);
+	    bienvenida.setFont(new Font("Comic Sans", Font.BOLD, 20));
+	    bienvenida.setSize(350, 100);
+	    bienvenida.setLocation(70, 0);
+	    bienvenida.setOpaque(true);
+	    bienvenida.setForeground(Color.white);
+	    bienvenida.setBackground(Color.decode("#FFB4B5"));
+
+	    JPanel jp6 = new JPanel();
+	    jp6.setSize(500, 600);
+	    jp6.setLocation(0, 0);
+	    jp6.setLayout(null);
+	    jp6.setBackground(Color.decode("#FFB4B5"));
+
+	    JLabel edit = new JLabel("<html>Editar<html>", JLabel.LEFT);
+	    edit.setFont(new Font("Comic Sans", Font.BOLD, 16));
+	    edit.setSize(350, 130);
+	    edit.setLocation(50, 60);
+	    edit.setOpaque(true);
+	    edit.setForeground(Color.white);
+	    edit.setBackground(Color.decode("#FFB4B5"));
+
+	    JComboBox<String> lista = new JComboBox();
+	    lista.setSize(350, 30);
+	    lista.setLocation(50, 150);
+	    lista.setOpaque(true);
+	    lista.setBackground(Color.white);
+	    lista.setForeground(Color.black);
+
+	    ArrayList<String> nombresUsuarios = new ArrayList<>();
+	    try {
+	        BufferedReader br = new BufferedReader(new FileReader("users.txt"));
+	        String line;
+	        while ((line = br.readLine()) != null) {
+	            String[] data = line.split(",");
+	            nombresUsuarios.add(data[0]);
+	        }
+	        br.close();
+	    } catch (IOException ex) {
+	        ex.printStackTrace();
+	    }
+
+	    for (String nombre : nombresUsuarios) {
+	        lista.addItem(nombre);
+	    }
+	    
+	    usuarioSeleccionado = (String) lista.getSelectedItem();
+	    JButton editarUsuario = new JButton("Editar a " + usuarioSeleccionado);
+	    editarUsuario.setSize(150, 30);
+	    editarUsuario.setLocation(50, 190);
+	    jp6.add(editarUsuario);
+
+	    lista.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            usuarioSeleccionado = (String) lista.getSelectedItem();
+	            editarUsuario.setText("Editar a " + usuarioSeleccionado);
+	            editarUsuario.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						anterior = actual;
+						actual = "micuenta";
+						remove(jp6);
+						limpiarVentana();
+					}
+	            	
+	            });
+	        }
+	    });
+	    
+	    
+	    
+	    
+	    jp6.add(lista);
+	    jp6.add(bienvenida);
+	    jp6.add(edit);
+	    return jp6;
 	}
 }

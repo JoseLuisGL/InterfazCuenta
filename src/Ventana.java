@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.ButtonGroup;
@@ -723,10 +724,10 @@ public class Ventana extends JFrame {
 		tag2R.setForeground(Color.white);
 		jp5.add(tag2R);
 		
-		JTextField usuarios = new JTextField();
-		usuarios.setSize(250, 40);
-		usuarios.setLocation(120, 260);
-		jp5.add(usuarios);
+		JTextField apellidos = new JTextField();
+		apellidos.setSize(250, 40);
+		apellidos.setLocation(120, 260);
+		jp5.add(apellidos);
 		
 		JLabel tag3 = new JLabel("Email: ",JLabel.CENTER);
 		tag3.setSize(250, 20);
@@ -760,13 +761,87 @@ public class Ventana extends JFrame {
 		btnVolver.setLocation(120, 450);
 		btnVolver.setBackground(Color.red);
 		btnVolver.setForeground(Color.white);
+		btnVolver.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				anterior = actual;
+				actual = "cuenta";
+				
+				limpiarVentana();
+			}
+			
+		});
 		
-		JButton btnActualizar = new JButton("Actulizar datos");
+		JButton btnActualizar = new JButton("Actualizar datos");
 		btnActualizar.setSize(140, 30);
 		btnActualizar.setLocation(230, 450);
 		btnActualizar.setBackground(Color.blue);
 		btnActualizar.setForeground(Color.white);
 
+		btnActualizar.addActionListener(new ActionListener() {
+
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        // Leer los datos del archivo users.txt y guardarlos en un ArrayList de objetos Usuario
+		        ArrayList<Usuario> usuarios = new ArrayList<>();
+		        try {
+		            BufferedReader br = new BufferedReader(new FileReader("users.txt"));
+		            String line;
+		            while ((line = br.readLine()) != null) {
+		                String[] data = line.split(",");
+		                Usuario user = new Usuario(data[0], data[1], data[2], data[3]);
+		                usuarios.add(user);
+		            }
+		            br.close();
+		        } catch (IOException ex) {
+		            ex.printStackTrace();
+		        }
+		        
+		        // Obtener los nuevos datos del formulario
+		        String nombre = nombres.getText();
+		        String apellido = apellidos.getText();
+		        String email = correo.getText();
+		        String password = new String(contraseña.getPassword());
+		        
+		        // Actualizar los datos del objeto Usuario correspondiente
+		        boolean encontrado = false;
+		        for (Usuario user : usuarios) {
+		            if (user.getCorreo().equals(email)) {
+		                user.setNombre(nombre);
+		                user.setApellidos(apellido);
+		                user.setContraseña(password);
+		                encontrado = true;
+		                break;
+		            }
+		        }
+		        
+		        // Escribir los nuevos datos en el archivo users.txt
+		        try {
+		            PrintWriter pw = new PrintWriter(new FileWriter("users.txt"));
+		            for (Usuario user : usuarios) {
+		                pw.println(user.toString());
+		            }
+		            pw.close();
+		        } catch (IOException ex) {
+		            ex.printStackTrace();
+		            JOptionPane.showMessageDialog(null, "La información no se ha podido actualizar", "Error", JOptionPane.ERROR_MESSAGE);
+		        }
+		        
+		        if (encontrado) {
+		            // Limpiar los campos del formulario
+		            nombres.setText("");
+		            apellidos.setText("");
+		            correo.setText("");
+		            contraseña.setText("");
+		            
+		            JOptionPane.showMessageDialog(null, "Informacion Actulizada", "Correcto", JOptionPane.INFORMATION_MESSAGE);
+		        } else {
+		            JOptionPane.showMessageDialog(null, "No se encontró ningún usuario con ese correo electrónico.", "Error", JOptionPane.ERROR_MESSAGE);
+		        }
+		    }
+		});
 
 		jp5.add(btnActualizar);
 		jp5.add(btnVolver);

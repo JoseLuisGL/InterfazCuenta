@@ -1,6 +1,7 @@
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -17,10 +18,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -40,7 +47,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 public class Ventana extends JFrame {
 	private int duracion;
@@ -438,7 +449,11 @@ public class Ventana extends JFrame {
 			        // Verificar que todos los campos estén llenos
 			        if (nombres.getText().isEmpty() || usuarios.getText().isEmpty() ||
 			                correo.getText().isEmpty() || contraseña1.getPassword().length == 0 || contraseña2.getPassword().length == 0) {
-			            JOptionPane.showMessageDialog(jp2, "Por favor, llene todos los campos.");
+			            JOptionPane.showMessageDialog(jp2, "Por favor, llene todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+			            return;
+			        }
+			        if (!Arrays.equals(contraseña1.getPassword(), contraseña2.getPassword())){
+			            JOptionPane.showMessageDialog(jp2, "Las contraseñas no son correctas", "Error", JOptionPane.ERROR_MESSAGE);
 			            return;
 			        }
 			        
@@ -454,7 +469,7 @@ public class Ventana extends JFrame {
 			                String line = scanner.nextLine();
 			                String[] parts = line.split(",");
 			                if (parts.length >= 3 && parts[2].equals(email)) {
-			                    JOptionPane.showMessageDialog(jp2, "No se pudo crear el usuario. Ya existe un correo electrónico igual.");
+			                    JOptionPane.showMessageDialog(jp2, "No se pudo crear el usuario. Ya existe un correo electrónico igual.", "Error", JOptionPane.ERROR_MESSAGE);
 			                    scanner.close();
 			                    return;
 			                }
@@ -472,10 +487,10 @@ public class Ventana extends JFrame {
 			            linea.close();
 			            writer.close();
 			            
-			            JOptionPane.showMessageDialog(jp2, "Usuario creado");
+			            JOptionPane.showMessageDialog(jp2, "Usuario creado", "Correcto", JOptionPane.INFORMATION_MESSAGE);
 			        } catch (IOException e1) {
 			            e1.printStackTrace();
-			            JOptionPane.showMessageDialog(jp2, "El usuario no se ha podido crear");
+			            JOptionPane.showMessageDialog(jp2, "El usuario no se ha podido crear", "Error", JOptionPane.ERROR_MESSAGE);
 			        }
 			    }
 			});
@@ -937,31 +952,129 @@ public class Ventana extends JFrame {
 	        }
 	    });
 	    
-	    Object[] cabeceras = {"Nombre", "Apellidos", "Email", "Contraseña"};
-		dtm = new DefaultTableModel(cabeceras, 0);
+	    Object[] cabeceras = {"Nombre", "Apellidos", "Email", "Contraseña", "Acciones"};
+	    dtm = new DefaultTableModel(cabeceras, 0) {
+	        // Override el método isCellEditable para que todas las celdas sean no editables excepto la última columna (Acciones)
+	        @Override
+	        public boolean isCellEditable(int row, int column) {
+	            return column == 4;
+	        }
+	    };
+	    
+	    try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
+	        String linea;
+	        while ((linea = br.readLine()) != null) {
+	            String[] datos = linea.split(",");
+	            dtm.addRow(datos);
+	        }
+	    } catch (IOException e1) {
+	        e1.printStackTrace();
+	    }
 
-        try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] datos = linea.split(",");
-                dtm.addRow(datos);
-            }
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        JTable tabla = new JTable(dtm);
-        JScrollPane es = new JScrollPane(tabla);
-        es.setSize(350, 130);
-        es.setLocation(50, 230);
-        jp6.add(es);
+	    // Agregar una nueva columna con botones a la tabla
+	    JTable tabla = new JTable(dtm);
+	    JScrollPane es = new JScrollPane(tabla);
+	    es.setSize(460, 130);
+	    es.setLocation(10, 230);
+	    jp6.add(es);
+	    TableColumn column = tabla.getColumnModel().getColumn(4);
+	    column.setCellRenderer(new ButtonRenderer());
+	    column.setCellEditor(new ButtonEditor(new JCheckBox()));
+	    
+	    // Agregar ActionListener para el botón de eliminar
+	    column.getCellEditor().addCellEditorListener((CellEditorListener) new CellEditorListener() {
+	        @Override
+	        public void editingStopped(ChangeEvent e) {
+	            int filaSeleccionada = tabla.getSelectedRow();
+	            if (filaSeleccionada != -1) {
+	                int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea eliminar este usuario?",
+	                        "Confirmación de eliminación", JOptionPane.YES_NO_OPTION);
+	                if (respuesta == JOptionPane.YES_OPTION) {
+	                    // Eliminar la fila de la tabla
+	                    dtm.removeRow(filaSeleccionada);
+	                    // Actualizar el archivo "users.txt"
+	                    try {
+	                        List<String> lineas = Files.readAllLines(Paths.get("users.txt"), StandardCharsets.UTF_8);
+	                        lineas.remove(filaSeleccionada);
+	                        Files.write(Paths.get("users.txt"), lineas, StandardCharsets.UTF_8);
+	                    } catch (IOException ex) {
+	                        ex.printStackTrace();
+	                    }
+	                }
+	            }
+	        }
+
+	        @Override
+	        public void editingCanceled(ChangeEvent e) {
+	            // No hacer nada en caso de cancelar la edición
+	        }
+	    });
+	    
 
         setVisible(true);
 	    
-	    
+	
 	    jp6.add(lista);
 	    jp6.add(bienvenida);
 	    jp6.add(edit);
+	   
 	    return jp6;
+	}
+	// Renderizador de botones personalizado para la columna "Acciones"
+	class ButtonRenderer extends JButton implements TableCellRenderer {
+	    public ButtonRenderer() {
+	        setOpaque(true);
+	    }
+
+	    public Component getTableCellRendererComponent(JTable table, Object value,
+	            boolean isSelected, boolean hasFocus, int row, int column) {
+	        setText("Eliminar");
+	        return this;
+	    }
+	}
+
+	// Editor de botones personalizado para la columna "Acciones"
+	class ButtonEditor extends DefaultCellEditor {
+	    protected JButton button;
+
+	    private String label;
+
+	    private boolean isPushed;
+
+	    public ButtonEditor(JCheckBox checkBox) {
+	        super(checkBox);
+	        button = new JButton();
+	        button.setOpaque(true);
+	        button.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                fireEditingStopped();
+	            }
+	        });
+	    }
+
+	    public Component getTableCellEditorComponent(JTable table, Object value,
+	            boolean isSelected, int row, int column) {
+	        if (isSelected) {
+	            button.setForeground(table.getSelectionForeground());
+	            button.setBackground(table.getSelectionBackground());
+	        } else {
+	            button.setForeground(table.getForeground());
+	            button.setBackground(table.getBackground());
+	        }
+	        label = (value == null) ? "Eliminar" : value.toString();
+	        button.setText(label);
+	        isPushed = true;
+	        return button;
+	    }
+
+	    public boolean stopCellEditing() {
+	        isPushed = false;
+	        return super.stopCellEditing();
+	    }
+
+	    protected void fireEditingStopped() {
+	        super.fireEditingStopped();
+	    }
 	}
 	
 	

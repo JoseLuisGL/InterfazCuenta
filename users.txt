@@ -1,5 +1,6 @@
 sdasd4t43,sdfgdgd,jo@uabcs.mx,12
-jose,lopez,jgomez_21@uabcs.mx,123cuadradoxd
+jose,lopez,jgomez_21@uabcs.mx,123
 Rata,Uno,rata@gmail.com,123
-prueba,usuario1,o@uabcs.mx,ññ
-gg,dfg,jaa@uabcs.mx,123
+hola,hdhfg,yo@uabcs.mx,i
+asdasd,adasd,prueba@uabcs.mx,ho
+sdgs,dsgsdg,dfhdfh,12

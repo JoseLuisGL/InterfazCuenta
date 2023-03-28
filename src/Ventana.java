@@ -61,7 +61,7 @@ public class Ventana extends JFrame {
 	private String ayuda = "login";
 	private String tabla = "login";
 	private String usuarioSeleccionado;
-	 private DefaultTableModel dtm;
+	private DefaultTableModel dtm;
 	public JPanel panel = null;
 	
 	public Ventana() {
@@ -78,33 +78,7 @@ public class Ventana extends JFrame {
 		limpiarVentana();
 		
 		
-		
-	
-		
-		
-		
 		}
-	
-	public void Splash(int duracion) {
-		duracion = 4000;
-		this.duracion = duracion;
-		JPanel panel = (JPanel) getContentPane();
-		ImageIcon img = new ImageIcon("img/sol.png");
-		
-		panel.add(new JLabel(img),BorderLayout.CENTER);
-		setSize(img.getIconWidth(), img.getIconHeight());
-		setLocationRelativeTo(null);
-		setVisible(true);
-		setTitle("Pantalla de carga");
-		
-		try {
-			Thread.sleep(duracion);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		setVisible(false);
-		
-	}
 	
 	public JPanel login()
 	{
@@ -179,7 +153,7 @@ public class Ventana extends JFrame {
 				anterior = actual;
 				actual = "registro";
 				
-				
+				//Crear variables string para poder guardar los datos del registro y luego hacer las validaciones.
 				String email = username.getText();
 				String pwd = new String (password.getPassword());
 				
@@ -197,7 +171,7 @@ public class Ventana extends JFrame {
 					while(line != null) {
 						
 						String data [] = line.split(",");
-						 
+						//Validar si el email y la contraseña son correctos con el registro en "users.txt". 
 						if( email.equals(data[2]) ) {
 							if( pwd.equals(data[3]) ) {
 								flag = true;
@@ -209,6 +183,7 @@ public class Ventana extends JFrame {
 					}
 					
 					if(flag) {
+						//Validacion correcta.
 						JOptionPane.showMessageDialog(null,"Bienvenido " + username.getText(),
 						"Ingresando al sistema...", JOptionPane.INFORMATION_MESSAGE );
 						anterior = actual;
@@ -217,6 +192,7 @@ public class Ventana extends JFrame {
 						repaint();
 						revalidate();
 					}else {
+						//Validacion incorrecta.
 						JOptionPane.showMessageDialog(null,"Error",
 						"El usuario y la contraseña no coinciden!", JOptionPane.ERROR_MESSAGE );
 					}
@@ -345,8 +321,6 @@ public class Ventana extends JFrame {
 		}
 		
 	public JPanel registro() {
-
-		
 			anterior = actual;
 			actual = "registro";
 			
@@ -1000,6 +974,8 @@ public class Ventana extends JFrame {
 	                    } catch (IOException ex) {
 	                        ex.printStackTrace();
 	                    }
+	                }else {
+	                	JOptionPane.showMessageDialog(null, "No se hizo nada");
 	                }
 	            }
 	        }
@@ -1007,6 +983,7 @@ public class Ventana extends JFrame {
 	        @Override
 	        public void editingCanceled(ChangeEvent e) {
 	            // No hacer nada en caso de cancelar la edición
+	        	JOptionPane.showMessageDialog(null, "No se hizo nada");
 	        }
 	    });
 	    
@@ -1020,6 +997,7 @@ public class Ventana extends JFrame {
 	   
 	    return jp6;
 	}
+	
 	// Renderizador de botones personalizado para la columna "Acciones"
 	class ButtonRenderer extends JButton implements TableCellRenderer {
 	    public ButtonRenderer() {
